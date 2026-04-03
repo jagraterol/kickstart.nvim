@@ -968,16 +968,6 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'https://codeberg.org/esensar/nvim-dev-container',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    config = function()
-      require('devcontainer').setup {
-        nvim_install_as_root = true,
-      }
-    end,
-  },
-
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
