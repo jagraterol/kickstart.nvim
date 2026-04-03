@@ -166,7 +166,17 @@ vim.o.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle File Explorer' })
 ---
+
+-- [[ DAP Keymaps ]]
+vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { desc = 'DAP Continue/Start' })
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end, { desc = 'DAP Toggle Breakpoint' })
+vim.keymap.set('n', '<leader>do', function() require('dap').step_over() end, { desc = 'DAP Step Over' })
+vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end, { desc = 'DAP Step Into' })
+vim.keymap.set('n', '<leader>ds', function() require('dap').step_out() end, { desc = 'DAP Step Out' })
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = 'DAP UI Toggle' })
+vim.keymap.set('n', '<leader>dq', function() require('dap').terminate() end, { desc = 'DAP Terminate Session' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -996,7 +1006,12 @@ require('lazy').setup({
       require('telescope').load_extension 'ui-select'
     end,
   },
-  { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
+    config = function() require('dapui').setup() end,
+  },
+
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
@@ -1055,6 +1070,28 @@ require('lazy').setup({
     },
   },
 })
+
+local dap = require 'dap'
+local mason_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/adapter/codelldb'
+dap.adapters.codelldb = {
+  type = 'server',
+  port = '${port}',
+  executable = {
+    command = mason_path,
+    args = { '--port', '${port}' },
+  },
+}
+dap.configurations.rust = {
+  {
+    name = 'Debug',
+    type = 'codelldb',
+    request = 'launch',
+    program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file') end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+  },
+}
 
 -- [[ Personal Autocommands ]]
 -- Disable copilot autocompletion in Rust files
