@@ -170,13 +170,13 @@ vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle Fil
 ---
 
 -- [[ DAP Keymaps ]]
-vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { desc = 'DAP Continue/Start' })
-vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end, { desc = 'DAP Toggle Breakpoint' })
-vim.keymap.set('n', '<leader>do', function() require('dap').step_over() end, { desc = 'DAP Step Over' })
-vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end, { desc = 'DAP Step Into' })
-vim.keymap.set('n', '<leader>ds', function() require('dap').step_out() end, { desc = 'DAP Step Out' })
-vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = 'DAP UI Toggle' })
-vim.keymap.set('n', '<leader>dq', function() require('dap').terminate() end, { desc = 'DAP Terminate Session' })
+vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { desc = '[D]ebug [C]ontinue/Start' })
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end, { desc = '[D]ebug Toggle [B]reakpoint' })
+vim.keymap.set('n', '<leader>do', function() require('dap').step_over() end, { desc = '[D]ebug Step [O]ver' })
+vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end, { desc = '[D]ebug Step [I]nto' })
+vim.keymap.set('n', '<leader>ds', function() require('dap').step_out() end, { desc = '[D]ebug [S]tep Out' })
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = '[D]ebug [U]I Toggle' })
+vim.keymap.set('n', '<leader>dq', function() require('dap').terminate() end, { desc = '[D]ebug [Q]uit Session' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -357,6 +357,7 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
         { 'gr', group = 'LSP Actions', mode = { 'n' } },
+        { '<leader>d', group = '[D]ebug', mode = { 'n' } },
       },
     },
   },
@@ -650,6 +651,7 @@ require('lazy').setup({
           },
         },
         taplo = {},
+        jsonls = {},
 
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -743,6 +745,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        json = { 'prettierd' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -936,8 +939,8 @@ require('lazy').setup({
 
         -- enables treesitter based folds
         -- for more info on folds see `:help folds`
-        -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-        -- vim.wo.foldmethod = 'expr'
+        vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+        vim.wo.foldmethod = 'expr'
 
         -- enables treesitter based indentation
         vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
@@ -1022,6 +1025,11 @@ require('lazy').setup({
     config = function() require('nvim-tree').setup {} end,
   },
   { 'theHamsta/nvim-dap-virtual-text', config = function() require('nvim-dap-virtual-text').setup {} end },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = function() require('nvim-autopairs').setup {} end,
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
